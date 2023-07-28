@@ -24,22 +24,54 @@ class _ExpensesState extends State<Expenses> {
         date: DateTime.now(),
         category: Category.leisure),
   ];
-
-  void _openAddExpenseOverlay(){
-    showModalBottomSheet(context: context, builder: (ctx) => const NewExpense());
+  void _openAddExpenseOverlay() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+        context: context, builder: (ctx) =>  NewExpense(onAddExpense: _addExpense,));
   }
+
+
+  void _removeExpense(Expense expense){
+    final expenseIndex = _rigesterExpense.indexOf(expense);
+    setState(() {
+     _rigesterExpense.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+   ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(
+      duration:const  Duration(seconds: 3),
+      content:  const Text('Expense deleted'),
+      action: SnackBarAction(label: "undo", onPressed: (){
+          setState(() {
+            _rigesterExpense.insert(expenseIndex, expense);
+          });
+      }),
+      ),
+   );
+
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      _rigesterExpense.add(expense);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(child: Text("No Expense Found. Start adding some!"),);
+    if(_rigesterExpense.isNotEmpty){
+      mainContent =  ExpensesList(expenses: _rigesterExpense, onRemoveExpense: _removeExpense,);
+    }
     return Scaffold(
-      appBar: AppBar(
-        title: const   Text('Expense Tracker'),
-        actions: [
-        IconButton(onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
+      appBar: AppBar(title: const Text('Expense Tracker'), actions: [
+        IconButton(
+            onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
       ]),
       body: Column(
         children: [
           const Text('The chart'),
-          Expanded(child: ExpensesList(expenses: _rigesterExpense))
+          Expanded(child:mainContent)
         ],
       ),
     );
