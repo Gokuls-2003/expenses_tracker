@@ -9,7 +9,20 @@ void main(){
   runApp(
     MaterialApp(
       darkTheme: ThemeData.dark().copyWith(useMaterial3: true,
-      colorScheme: kdarkcolorScheme,     
+      colorScheme: kdarkcolorScheme,
+       cardTheme:  const CardTheme().copyWith(
+        color: kdarkcolorScheme.secondaryContainer,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 7,
+        )
+      ),
+       elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: kdarkcolorScheme.primaryContainer,
+          foregroundColor: kdarkcolorScheme.onPrimaryContainer,
+        )
+      ),     
       ),
       theme: ThemeData().
       copyWith(useMaterial3: true,
